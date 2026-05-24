@@ -18,24 +18,29 @@ cd TU_NUEVO_REPO
 Por defecto, todo el código interno (carpetas, namespaces y el .sln) se llama `BaseMicroservicio`. Para cambiar todo esto de forma segura y automática, abre **PowerShell** dentro de la carpeta de tu nuevo repositorio y pega el siguiente script.
 
 **⚠️ IMPORTANTE:** Cambia el valor de `$nuevo` en la línea 3 por el nombre real de tu microservicio (ej. `"Medico"`, `"Enfermeria"`, `"Admision"`).
+Ejecuta por bloques. Recuerda cambiar el nombre antes de copiar y pegar para evitar que se ejecute todo de corrido en la consola.
 
 ---
 
 $viejo = "BaseMicroservicio"
-$nuevo = "PON_AQUI_TU_NOMBRE" # <-- ¡CAMBIA ESTO ANTES DE EJECUTAR!
+$nuevo = "PonNuevoNombreAquiMicroservicio"
 
-Write-Host "Iniciando renombrado profundo de '$viejo' a '$nuevo'..."
+Write-Host "Iniciando reemplazo de texto de '$viejo' a '$nuevo'..."
 
-Get-ChildItem -Path . -Recurse -File | Where-Object { $_.FullName -notmatch "\\\.git\\" } | ForEach-Object {
+Get-ChildItem -Path . -Recurse -File | Where-Object { $_.FullName -notmatch "\\.git\\" } | ForEach-Object {
     $contenido = Get-Content $_.FullName -Raw
     if ($contenido -match $viejo) {
         $contenido -replace $viejo, $nuevo | Set-Content $_.FullName -NoNewline
     }
 }
 
-Get-ChildItem -Path . -Recurse | Where-Object { $_.Name -match $viejo -and $_.FullName -notmatch "\\\.git\\" } | Sort-Object -Property @{Expression={$_.FullName.Length}; Descending=$true} | Rename-Item -NewName { $_.Name -replace $viejo, $nuevo }
+---
 
-Write-Host "¡Renombrado exitoso! Ya puedes abrir tu nueva solución."
+Get-ChildItem -Path . -Recurse -File | Where-Object { $_.Name -match $viejo } | Rename-Item -NewName { $_.Name -replace $viejo, $nuevo }
+
+---
+
+Get-ChildItem -Path . -Recurse -Directory | Where-Object { $_.Name -match $viejo } | Sort-Object -Property @{Expression={$_.FullName.Length}; Descending=$true} | Rename-Item -NewName { $_.Name -replace $viejo, $nuevo }
 
 ---
 ## ✅ Paso 4: Verificar y Subir
